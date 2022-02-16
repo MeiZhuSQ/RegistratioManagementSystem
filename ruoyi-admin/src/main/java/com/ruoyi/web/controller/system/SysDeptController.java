@@ -23,7 +23,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.service.ISysDeptService;
 
 /**
- * 部门信息
+ * 专业信息
  * 
  * @author ruoyi
  */
@@ -53,7 +53,7 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 新增部门
+     * 新增专业
      */
     @GetMapping("/add/{parentId}")
     public String add(@PathVariable("parentId") Long parentId, ModelMap mmap)
@@ -67,9 +67,9 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 新增保存部门
+     * 新增保存专业
      */
-    @Log(title = "部门管理", businessType = BusinessType.INSERT)
+    @Log(title = "专业管理", businessType = BusinessType.INSERT)
     @RequiresPermissions("system:dept:add")
     @PostMapping("/add")
     @ResponseBody
@@ -77,14 +77,14 @@ public class SysDeptController extends BaseController
     {
         if (UserConstants.DEPT_NAME_NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept)))
         {
-            return error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+            return error("新增专业'" + dept.getDeptName() + "'失败，专业名称已存在");
         }
         dept.setCreateBy(getLoginName());
         return toAjax(deptService.insertDept(dept));
     }
 
     /**
-     * 修改部门
+     * 修改专业
      */
     @RequiresPermissions("system:dept:edit")
     @GetMapping("/edit/{deptId}")
@@ -101,9 +101,9 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 修改保存部门
+     * 修改保存专业
      */
-    @Log(title = "部门管理", businessType = BusinessType.UPDATE)
+    @Log(title = "专业管理", businessType = BusinessType.UPDATE)
     @RequiresPermissions("system:dept:edit")
     @PostMapping("/edit")
     @ResponseBody
@@ -113,15 +113,15 @@ public class SysDeptController extends BaseController
         deptService.checkDeptDataScope(deptId);
         if (UserConstants.DEPT_NAME_NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept)))
         {
-            return error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+            return error("修改专业'" + dept.getDeptName() + "'失败，专业名称已存在");
         }
         else if (dept.getParentId().equals(deptId))
         {
-            return error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
+            return error("修改专业'" + dept.getDeptName() + "'失败，上级专业不能是自己");
         }
         else if (StringUtils.equals(UserConstants.DEPT_DISABLE, dept.getStatus()) && deptService.selectNormalChildrenDeptById(deptId) > 0)
         {
-            return AjaxResult.error("该部门包含未停用的子部门！");
+            return AjaxResult.error("该专业包含未停用的子专业！");
         }
         dept.setUpdateBy(getLoginName());
         return toAjax(deptService.updateDept(dept));
@@ -130,7 +130,7 @@ public class SysDeptController extends BaseController
     /**
      * 删除
      */
-    @Log(title = "部门管理", businessType = BusinessType.DELETE)
+    @Log(title = "专业管理", businessType = BusinessType.DELETE)
     @RequiresPermissions("system:dept:remove")
     @GetMapping("/remove/{deptId}")
     @ResponseBody
@@ -138,18 +138,18 @@ public class SysDeptController extends BaseController
     {
         if (deptService.selectDeptCount(deptId) > 0)
         {
-            return AjaxResult.warn("存在下级部门,不允许删除");
+            return AjaxResult.warn("存在下级专业,不允许删除");
         }
         if (deptService.checkDeptExistUser(deptId))
         {
-            return AjaxResult.warn("部门存在用户,不允许删除");
+            return AjaxResult.warn("专业存在用户,不允许删除");
         }
         deptService.checkDeptDataScope(deptId);
         return toAjax(deptService.deleteDeptById(deptId));
     }
 
     /**
-     * 校验部门名称
+     * 校验专业名称
      */
     @PostMapping("/checkDeptNameUnique")
     @ResponseBody
@@ -159,9 +159,9 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 选择部门树
+     * 选择专业树
      * 
-     * @param deptId 部门ID
+     * @param deptId 专业ID
      * @param excludeId 排除ID
      */
     @GetMapping(value = { "/selectDeptTree/{deptId}", "/selectDeptTree/{deptId}/{excludeId}" })
@@ -174,7 +174,7 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 加载部门列表树
+     * 加载专业列表树
      */
     @GetMapping("/treeData")
     @ResponseBody
@@ -185,7 +185,7 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 加载部门列表树（排除下级）
+     * 加载专业列表树（排除下级）
      */
     @GetMapping("/treeData/{excludeId}")
     @ResponseBody
@@ -198,7 +198,7 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 加载角色部门（数据权限）列表树
+     * 加载角色专业（数据权限）列表树
      */
     @GetMapping("/roleDeptTreeData")
     @ResponseBody

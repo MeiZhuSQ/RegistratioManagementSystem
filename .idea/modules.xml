@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/RegistratioManagementSystem.iml" filepath="$PROJECT_DIR$/RegistratioManagementSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/officerInfoSystem.iml" filepath="$PROJECT_DIR$/officerInfoSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/ruoyi-admin/ruoyi-admin.iml" filepath="$PROJECT_DIR$/ruoyi-admin/ruoyi-admin.iml" />
       <module fileurl="file://$PROJECT_DIR$/ruoyi-common/ruoyi-common.iml" filepath="$PROJECT_DIR$/ruoyi-common/ruoyi-common.iml" />

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RegistrationUserCourseMapper">
+    
+    <resultMap type="RegistrationUserCourse" id="RegistrationUserCourseResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="courseId"    column="course_id"    />
+        <result property="registrationStatus"    column="registration_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectRegistrationUserCourseVo">
+        select id, user_id, course_id, registration_status, create_by, create_time, update_by, update_time, remark from registration_user_course
+    </sql>
+
+    <select id="selectRegistrationUserCourseList" parameterType="RegistrationUserCourse" resultMap="RegistrationUserCourseResult">
+        <include refid="selectRegistrationUserCourseVo"/>
+        <where>  
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="courseId != null  and courseId != ''"> and course_id = #{courseId}</if>
+            <if test="registrationStatus != null  and registrationStatus != ''"> and registration_status = #{registrationStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectRegistrationUserCourseById" parameterType="Long" resultMap="RegistrationUserCourseResult">
+        <include refid="selectRegistrationUserCourseVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRegistrationUserCourse" parameterType="RegistrationUserCourse" useGeneratedKeys="true" keyProperty="id">
+        insert into registration_user_course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="courseId != null">course_id,</if>
+            <if test="registrationStatus != null">registration_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="courseId != null">#{courseId},</if>
+            <if test="registrationStatus != null">#{registrationStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRegistrationUserCourse" parameterType="RegistrationUserCourse">
+        update registration_user_course
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="courseId != null">course_id = #{courseId},</if>
+            <if test="registrationStatus != null">registration_status = #{registrationStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRegistrationUserCourseById" parameterType="Long">
+        delete from registration_user_course where id = #{id}
+    </delete>
+
+    <delete id="deleteRegistrationUserCourseByIds" parameterType="String">
+        delete from registration_user_course where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

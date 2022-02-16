@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RegistrationCourseMapper">
+    
+    <resultMap type="RegistrationCourse" id="RegistrationCourseResult">
+        <result property="id"    column="id"    />
+        <result property="courseName"    column="course_name"    />
+        <result property="courseScore"    column="course_score"    />
+        <result property="courseRequired"    column="course_required"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectRegistrationCourseVo">
+        select id, course_name, course_score, course_required, status, create_by, create_time, update_by, update_time, remark from registration_course
+    </sql>
+
+    <select id="selectRegistrationCourseList" parameterType="RegistrationCourse" resultMap="RegistrationCourseResult">
+        <include refid="selectRegistrationCourseVo"/>
+        <where>  
+            <if test="courseName != null  and courseName != ''"> and course_name like concat('%', #{courseName}, '%')</if>
+            <if test="courseScore != null  and courseScore != ''"> and course_score = #{courseScore}</if>
+            <if test="courseRequired != null  and courseRequired != ''"> and course_required = #{courseRequired}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectRegistrationCourseById" parameterType="Long" resultMap="RegistrationCourseResult">
+        <include refid="selectRegistrationCourseVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRegistrationCourse" parameterType="RegistrationCourse" useGeneratedKeys="true" keyProperty="id">
+        insert into registration_course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="courseName != null">course_name,</if>
+            <if test="courseScore != null">course_score,</if>
+            <if test="courseRequired != null">course_required,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="courseName != null">#{courseName},</if>
+            <if test="courseScore != null">#{courseScore},</if>
+            <if test="courseRequired != null">#{courseRequired},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRegistrationCourse" parameterType="RegistrationCourse">
+        update registration_course
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="courseName != null">course_name = #{courseName},</if>
+            <if test="courseScore != null">course_score = #{courseScore},</if>
+            <if test="courseRequired != null">course_required = #{courseRequired},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRegistrationCourseById" parameterType="Long">
+        delete from registration_course where id = #{id}
+    </delete>
+
+    <delete id="deleteRegistrationCourseByIds" parameterType="String">
+        delete from registration_course where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

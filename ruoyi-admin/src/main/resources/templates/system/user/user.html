@@ -13,10 +13,10 @@
 					<i class="fa icon-grid"></i> 组织机构
 				</div>
 				<div class="box-tools pull-right">
-				    <a type="button" class="btn btn-box-tool" href="#" onclick="dept()" title="管理部门"><i class="fa fa-edit"></i></a>
+				    <a type="button" class="btn btn-box-tool" href="#" onclick="dept()" title="管理专业"><i class="fa fa-edit"></i></a>
 					<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
 					<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
-					<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新专业"><i class="fa fa-refresh"></i></button>
 				</div>
 			</div>
 			<div class="ui-layout-content">
@@ -143,7 +143,7 @@
 		        },
 		        {
 		            field: 'dept.deptName',
-		            title: '部门'
+		            title: '专业'
 		        },
 		        {
 		            field: 'email',
@@ -222,10 +222,10 @@
 			queryDeptTree();
 		});
 
-		/* 用户管理-部门 */
+		/* 用户管理-专业 */
 		function dept() {
 			var url = ctx + "system/dept";
-			$.modal.openTab("部门管理", url);
+			$.modal.openTab("专业管理", url);
 		}
 
 		/* 用户管理-重置密码 */
