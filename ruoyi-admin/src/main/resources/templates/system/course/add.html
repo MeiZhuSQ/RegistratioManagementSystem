@@ -31,11 +31,10 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">课程状态：</label>
                 <div class="col-sm-8">
-                    <select class="form-control" name="status">
-                        <option>请选择</option>
-                        <option value="0">启用</option>
-                        <option value="1">禁用</option>
-                    </select>
+                    <div class="radio-box" th:each="dict : ${@dict.getType('course_status')}">
+                        <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
                 </div>
             </div>
             <div class="form-group">

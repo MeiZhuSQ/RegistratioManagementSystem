@@ -19,8 +19,10 @@
                                 <input type="text" name="courseScore"/>
                             </li>
                             <li>
-                                <label>是否必修</label>
-                                <input type="text" name="courseRequired"/>
+                                    <label>是否必修：</label><select name="courseRequired" th:with="type=${@dict.getType('course_required')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -52,6 +54,8 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
+        var datas = [[${@dict.getType('course_required')}]];
+        var courseStatusDatas = [[${@dict.getType('course_status')}]];
         var editFlag = [[${@permission.hasPermi('system:course:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:course:remove')}]];
         var prefix = ctx + "system/course";
@@ -82,11 +86,17 @@
                 },
                 {
                     field: 'courseRequired',
-                    title: '是否必修'
+                    title: '是否必修',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
                 },
                 {
                     field: 'status',
-                    title: '课程状态'
+                    title: '课程状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(courseStatusDatas, value);
+                    }
                 },
                 {
                     field: 'remark',
