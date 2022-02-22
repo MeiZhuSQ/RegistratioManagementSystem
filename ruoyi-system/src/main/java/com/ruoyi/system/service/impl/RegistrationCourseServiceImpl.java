@@ -1,7 +1,12 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.ShiroUtils;
+import com.ruoyi.system.domain.RegistrationUserCourse;
+import com.ruoyi.system.mapper.RegistrationUserCourseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.RegistrationCourseMapper;
@@ -13,13 +18,16 @@ import com.ruoyi.common.core.text.Convert;
  * 报名课程Service业务层处理
  * 
  * @author ruoyi
- * @date 2022-02-16
+ * @date 2022-02-22
  */
 @Service
 public class RegistrationCourseServiceImpl implements IRegistrationCourseService 
 {
     @Autowired
     private RegistrationCourseMapper registrationCourseMapper;
+
+    @Autowired
+    private RegistrationUserCourseMapper registrationUserCourseMapper;
 
     /**
      * 查询报名课程
@@ -93,5 +101,22 @@ public class RegistrationCourseServiceImpl implements IRegistrationCourseService
     public int deleteRegistrationCourseById(Long id)
     {
         return registrationCourseMapper.deleteRegistrationCourseById(id);
+    }
+
+    /**
+     * 我要报名
+     *
+     * @param id
+     * @return 结果
+     */
+    @Override
+    public int signUpCourse(String id) {
+        RegistrationUserCourse registrationUserCourse = new RegistrationUserCourse();
+        registrationUserCourse.setCourseId(id);
+        SysUser currentUser = ShiroUtils.getSysUser();
+        registrationUserCourse.setUserId(String.valueOf(currentUser.getUserId()));
+        registrationUserCourse.setCreateTime(DateUtils.getNowDate());
+        registrationUserCourse.setCreateBy(currentUser.getLoginName());
+        return registrationUserCourseMapper.insertRegistrationUserCourse(registrationUserCourse);
     }
 }

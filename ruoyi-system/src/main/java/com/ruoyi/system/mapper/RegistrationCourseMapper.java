@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.RegistrationCourse;
  * 报名课程Mapper接口
  * 
  * @author ruoyi
- * @date 2022-02-16
+ * @date 2022-02-22
  */
 public interface RegistrationCourseMapper 
 {

@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.RegistrationCourse;
  * 报名课程Service接口
  * 
  * @author ruoyi
- * @date 2022-02-16
+ * @date 2022-02-22
  */
 public interface IRegistrationCourseService 
 {
@@ -58,4 +58,12 @@ public interface IRegistrationCourseService
      * @return 结果
      */
     public int deleteRegistrationCourseById(Long id);
+
+    /**
+     * 我要报名
+     *
+     * @param id
+     * @return 结果
+     */
+    public int signUpCourse(String id);
 }

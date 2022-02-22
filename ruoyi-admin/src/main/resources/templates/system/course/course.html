@@ -15,11 +15,19 @@
                                 <input type="text" name="courseName"/>
                             </li>
                             <li>
-                                <label>课程学分：</label>
-                                <input type="text" name="courseScore"/>
+                                <label>是否是必修课程 0选修 1必修：</label>
+                                <select name="courseRequired" th:with="type=${@dict.getType('course_required')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
                             </li>
                             <li>
-                                    <label>是否必修：</label><select name="courseRequired" th:with="type=${@dict.getType('course_required')}">
+                                <label>教师ID：</label>
+                                <input type="text" name="teacherId"/>
+                            </li>
+                            <li>
+                                <label>课程状态：</label>
+                                <select name="status" th:with="type=${@dict.getType('course_status')}">
                                     <option value="">所有</option>
                                     <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                                 </select>
@@ -54,10 +62,10 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var datas = [[${@dict.getType('course_required')}]];
-        var courseStatusDatas = [[${@dict.getType('course_status')}]];
         var editFlag = [[${@permission.hasPermi('system:course:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:course:remove')}]];
+        var courseRequiredDatas = [[${@dict.getType('course_required')}]];
+        var statusDatas = [[${@dict.getType('course_status')}]];
         var prefix = ctx + "system/course";
 
         $(function() {
@@ -86,16 +94,20 @@
                 },
                 {
                     field: 'courseRequired',
-                    title: '是否必修',
+                    title: '是否是必修课程 0选修 1必修',
                     formatter: function(value, row, index) {
-                        return $.table.selectDictLabel(datas, value);
+                       return $.table.selectDictLabel(courseRequiredDatas, value);
                     }
+                },
+                {
+                    field: 'teacherName',
+                    title: '教师'
                 },
                 {
                     field: 'status',
                     title: '课程状态',
                     formatter: function(value, row, index) {
-                        return $.table.selectDictLabel(courseStatusDatas, value);
+                       return $.table.selectDictLabel(statusDatas, value);
                     }
                 },
                 {

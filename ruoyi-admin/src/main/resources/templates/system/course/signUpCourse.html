@@ -15,14 +15,15 @@
                             <input type="text" name="courseName"/>
                         </li>
                         <li>
-                            <label>课程学分：</label>
-                            <input type="text" name="courseScore"/>
+                            <label>是否必修：</label>
+                            <select name="courseRequired" th:with="type=${@dict.getType('course_required')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                            </select>
                         </li>
                         <li>
-                            <label>是否必修：</label><select name="courseRequired" th:with="type=${@dict.getType('course_required')}">
-                            <option value="">所有</option>
-                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                        </select>
+                            <label>教师ID：</label>
+                            <input type="text" name="teacherId"/>
                         </li>
                         <li>
                             <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -32,21 +33,6 @@
                 </div>
             </form>
         </div>
-
-        <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:course:add">
-                <i class="fa fa-plus"></i> 添加
-            </a>
-            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:course:edit">
-                <i class="fa fa-edit"></i> 修改
-            </a>
-            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:course:remove">
-                <i class="fa fa-remove"></i> 删除
-            </a>
-            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:course:export">
-                <i class="fa fa-download"></i> 导出
-            </a>
-        </div>
         <div class="col-sm-12 select-table table-striped">
             <table id="bootstrap-table"></table>
         </div>
@@ -54,17 +40,19 @@
 </div>
 <th:block th:include="include :: footer" />
 <script th:inline="javascript">
-    var datas = [[${@dict.getType('course_required')}]];
-    var courseStatusDatas = [[${@dict.getType('course_status')}]];
+    var editFlag = [[${@permission.hasPermi('system:course:edit')}]];
     var removeFlag = [[${@permission.hasPermi('system:course:remove')}]];
+    var courseRequiredDatas = [[${@dict.getType('course_required')}]];
+    var statusDatas = [[${@dict.getType('course_status')}]];
     var prefix = ctx + "system/course";
+    var prefix2 = ctx + "system/userCourse";
 
     $(function() {
         var options = {
             url: prefix + "/list",
             createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
-            removeUrl: prefix + "/remove",
+            signUpCourseUrl: prefix + "/signUpCourse",
             exportUrl: prefix + "/export",
             modalName: "报名课程",
             columns: [{
@@ -87,7 +75,18 @@
                     field: 'courseRequired',
                     title: '是否必修',
                     formatter: function(value, row, index) {
-                        return $.table.selectDictLabel(datas, value);
+                        return $.table.selectDictLabel(courseRequiredDatas, value);
+                    }
+                },
+                {
+                    field: 'teacherName',
+                    title: '教师姓名'
+                },
+                {
+                    field: 'status',
+                    title: '课程状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(statusDatas, value);
                     }
                 },
                 {
@@ -98,14 +97,25 @@
                     title: '操作',
                     align: 'center',
                     formatter: function(value, row, index) {
-                        var actions = [];
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>我要报名</a>');
-                        return actions.join('');
+                        return '<a class="btn btn-success btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="signUpCourse(\'' + row.id + '\')"><i class="fa fa-forward"></i>我要报名</a> ';
                     }
                 }]
         };
         $.table.init(options);
     });
+
+    function signUpCourse(id) {
+        table.set();
+        $.modal.confirm("确定要报名【" + table.options.modalName + "】课程吗？", function() {
+            var url = $.common.isEmpty(id) ? table.options.signUpCourseUrl : table.options.signUpCourseUrl.replace("{id}", id);
+            if(table.options.type == table_type.bootstrapTreeTable) {
+                $.operate.get(url);
+            } else {
+                var data = { "ids": id };
+                $.operate.submit(url, "post", "json", data);
+            }
+        });
+    }
 </script>
 </body>
 </html>

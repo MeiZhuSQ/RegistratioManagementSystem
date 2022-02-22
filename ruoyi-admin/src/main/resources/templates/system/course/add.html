@@ -7,38 +7,44 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-course-add">
             <div class="form-group">    
-                <label class="col-sm-3 control-label">课程名称：</label>
+                <label class="col-sm-3 control-label is-required">课程名称：</label>
                 <div class="col-sm-8">
-                    <input name="courseName" class="form-control" type="text">
+                    <input name="courseName" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label">课程学分：</label>
+                <label class="col-sm-3 control-label is-required">课程学分：</label>
                 <div class="col-sm-8">
-                    <input name="courseScore" class="form-control" type="text">
+                    <input name="courseScore" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">是否必修：</label>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">是否是必修课程 0选修 1必修：</label>
                 <div class="col-sm-8">
-                    <select class="form-control" name="courseRequired">
-                        <option>请选择</option>
-                        <option value="1">必修</option>
-                        <option value="0">选修</option>
+                    <select name="courseRequired" class="form-control m-b" th:with="type=${@dict.getType('course_required')}" required>
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                     </select>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">课程状态：</label>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">教师ID：</label>
+                <div class="col-sm-8">
+                    <select name="teacherId" class="form-control m-b">
+                        <option th:each="teacher:${teachers}" th:value="${teacher.userId}" th:text="${teacher.userName}" th:disabled="${teacher.status == '1'}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">课程状态：</label>
                 <div class="col-sm-8">
                     <div class="radio-box" th:each="dict : ${@dict.getType('course_status')}">
-                        <input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
-                        <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                        <input type="radio" th:id="${'status_' + dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}" required>
+                        <label th:for="${'status_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">课程描述：</label>
+                <label class="col-sm-3 control-label">备注：</label>
                 <div class="col-sm-8">
                     <textarea name="remark" class="form-control"></textarea>
                 </div>
@@ -57,6 +63,13 @@
                 $.operate.save(prefix + "/add", $('#form-course-add').serialize());
             }
         }
+
+        $(function() {
+            $('#teacherId').select2({
+                placeholder: "请选择教师",
+                allowClear: true
+            });
+        })
     </script>
 </body>
 </html>

@@ -1,6 +1,10 @@
 package com.ruoyi.web.controller.registration;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.service.ISysUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +27,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 报名课程Controller
  * 
  * @author ruoyi
- * @date 2022-02-16
+ * @date 2022-02-22
  */
 @Controller
 @RequestMapping("/system/course")
@@ -33,6 +37,9 @@ public class RegistrationCourseController extends BaseController
 
     @Autowired
     private IRegistrationCourseService registrationCourseService;
+
+    @Autowired
+    private SysUserMapper userMapper;
 
     @RequiresPermissions("system:course:view")
     @GetMapping()
@@ -51,6 +58,10 @@ public class RegistrationCourseController extends BaseController
     {
         startPage();
         List<RegistrationCourse> list = registrationCourseService.selectRegistrationCourseList(registrationCourse);
+        list.forEach(m -> {
+            SysUser sysUser = userMapper.selectUserById(m.getTeacherId());
+            m.setTeacherName(sysUser.getUserName());
+        });
         return getDataTable(list);
     }
 
@@ -72,8 +83,12 @@ public class RegistrationCourseController extends BaseController
      * 新增报名课程
      */
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mmap)
     {
+        SysUser user = new SysUser();
+        user.setRoleId(2L);
+        List<SysUser> teachers = userMapper.selectAllocatedList(user);
+        mmap.put("teachers", teachers);
         return prefix + "/add";
     }
 
@@ -97,7 +112,11 @@ public class RegistrationCourseController extends BaseController
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
     {
         RegistrationCourse registrationCourse = registrationCourseService.selectRegistrationCourseById(id);
+        SysUser user = new SysUser();
+        user.setRoleId(2L);
+        List<SysUser> teachers = userMapper.selectAllocatedList(user);
         mmap.put("registrationCourse", registrationCourse);
+        mmap.put("teachers", teachers);
         return prefix + "/edit";
     }
 
@@ -123,5 +142,24 @@ public class RegistrationCourseController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(registrationCourseService.deleteRegistrationCourseByIds(ids));
+    }
+
+    @RequiresPermissions("system:course:view")
+    @GetMapping()
+    public String toSignUpCourse()
+    {
+        return prefix + "/signUpCourse";
+    }
+
+    /**
+     * 我要报名
+     */
+    @RequiresPermissions("system:course:signUpCourse")
+    @Log(title = "我要报名", businessType = BusinessType.INSERT)
+    @PostMapping( "/signUpCourse")
+    @ResponseBody
+    public AjaxResult signUpCourse(String id)
+    {
+        return toAjax(registrationCourseService.signUpCourse(id));
     }
 }

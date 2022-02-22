@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 报名课程对象 registration_course
  * 
  * @author ruoyi
- * @date 2022-02-16
+ * @date 2022-02-22
  */
 public class RegistrationCourse extends BaseEntity
 {
@@ -29,6 +29,14 @@ public class RegistrationCourse extends BaseEntity
     /** 是否是必修课程 0选修 1必修 */
     @Excel(name = "是否是必修课程 0选修 1必修")
     private String courseRequired;
+
+    /** 教师ID */
+    @Excel(name = "教师ID")
+    private Long teacherId;
+
+    /** 教师ID */
+    @Excel(name = "教师姓名")
+    private String teacherName;
 
     /** 课程状态（0正常 1停用） */
     @Excel(name = "课程状态", readConverterExp = "0=正常,1=停用")
@@ -70,6 +78,15 @@ public class RegistrationCourse extends BaseEntity
     {
         return courseRequired;
     }
+    public void setTeacherId(Long teacherId) 
+    {
+        this.teacherId = teacherId;
+    }
+
+    public Long getTeacherId() 
+    {
+        return teacherId;
+    }
     public void setStatus(String status) 
     {
         this.status = status;
@@ -80,6 +97,14 @@ public class RegistrationCourse extends BaseEntity
         return status;
     }
 
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -87,12 +112,13 @@ public class RegistrationCourse extends BaseEntity
             .append("courseName", getCourseName())
             .append("courseScore", getCourseScore())
             .append("courseRequired", getCourseRequired())
+            .append("teacherId", getTeacherId())
             .append("status", getStatus())
-            .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("createBy", getCreateBy())
             .toString();
     }
 }
