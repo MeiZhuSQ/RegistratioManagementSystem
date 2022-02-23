@@ -1,9 +1,13 @@
 package com.ruoyi.web.controller.registration;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.system.domain.RegistrationUserCourse;
+import com.ruoyi.system.mapper.RegistrationUserCourseMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.service.IRegistrationUserCourseService;
 import com.ruoyi.system.service.ISysUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,9 @@ public class RegistrationCourseController extends BaseController
     @Autowired
     private SysUserMapper userMapper;
 
+    @Autowired
+    private IRegistrationUserCourseService registrationUserCourseService;
+
     @RequiresPermissions("system:course:view")
     @GetMapping()
     public String course()
@@ -63,6 +70,27 @@ public class RegistrationCourseController extends BaseController
             m.setTeacherName(sysUser.getUserName());
         });
         return getDataTable(list);
+    }
+
+    /**
+     * 查询我的报名课程列表
+     */
+    @RequiresPermissions("system:course:myCourselist")
+    @PostMapping("/myCourselist")
+    @ResponseBody
+    public TableDataInfo myCourselist(RegistrationCourse registrationCourse)
+    {
+        RegistrationUserCourse registrationUserCourse = new RegistrationUserCourse();
+        Long userId = getUserId();
+        registrationUserCourse.setUserId(String.valueOf(userId));
+        registrationUserCourse.setRegistrationStatus("1");
+        startPage();
+        List<RegistrationUserCourse> registrationUserCourses = registrationUserCourseService.selectRegistrationUserCourseList(registrationUserCourse);
+        List<RegistrationCourse> collect = registrationUserCourses.stream().map(m -> {
+            RegistrationCourse rs = registrationCourseService.selectRegistrationCourseById(Long.valueOf(m.getCourseId()));
+            return rs;
+        }).collect(Collectors.toList());
+        return getDataTable(collect);
     }
 
     /**
@@ -145,7 +173,7 @@ public class RegistrationCourseController extends BaseController
     }
 
     @RequiresPermissions("system:course:view")
-    @GetMapping()
+    @GetMapping("/toSignUpCourse")
     public String toSignUpCourse()
     {
         return prefix + "/signUpCourse";
@@ -160,6 +188,27 @@ public class RegistrationCourseController extends BaseController
     @ResponseBody
     public AjaxResult signUpCourse(String id)
     {
-        return toAjax(registrationCourseService.signUpCourse(id));
+        return registrationCourseService.signUpCourse(id);
     }
+
+    @RequiresPermissions("system:course:view")
+    @GetMapping("/toMySignUpCourse")
+    public String toMySignUpCourse()
+    {
+        return prefix + "/mySignUpCourse";
+    }
+
+    /**
+     * 退出报名
+     */
+    @RequiresPermissions("system:course:quitSignUpCourse")
+    @Log(title = "退出报名", businessType = BusinessType.UPDATE)
+    @PostMapping( "/quitSignUpCourse")
+    @ResponseBody
+    public AjaxResult quitSignUpCourse(String id)
+    {
+        registrationCourseService.quitSignUpCourse(id);
+        return AjaxResult.success("退出报名成功！");
+    }
+
 }

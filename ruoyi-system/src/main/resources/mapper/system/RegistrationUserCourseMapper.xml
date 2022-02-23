@@ -70,7 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
-        where id = #{id}
+        where user_id = #{userId} and course_id = #{courseId}
     </update>
 
     <delete id="deleteRegistrationUserCourseById" parameterType="Long">

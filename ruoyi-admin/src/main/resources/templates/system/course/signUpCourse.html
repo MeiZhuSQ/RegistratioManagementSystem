@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('报名课程列表')" />
+    <th:block th:include="include :: header('我要报名')" />
 </head>
 <body class="gray-bg">
 <div class="container-div">
@@ -43,9 +43,7 @@
     var editFlag = [[${@permission.hasPermi('system:course:edit')}]];
     var removeFlag = [[${@permission.hasPermi('system:course:remove')}]];
     var courseRequiredDatas = [[${@dict.getType('course_required')}]];
-    var statusDatas = [[${@dict.getType('course_status')}]];
     var prefix = ctx + "system/course";
-    var prefix2 = ctx + "system/userCourse";
 
     $(function() {
         var options = {
@@ -83,13 +81,6 @@
                     title: '教师姓名'
                 },
                 {
-                    field: 'status',
-                    title: '课程状态',
-                    formatter: function(value, row, index) {
-                        return $.table.selectDictLabel(statusDatas, value);
-                    }
-                },
-                {
                     field: 'remark',
                     title: '备注'
                 },
@@ -97,21 +88,21 @@
                     title: '操作',
                     align: 'center',
                     formatter: function(value, row, index) {
-                        return '<a class="btn btn-success btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="signUpCourse(\'' + row.id + '\')"><i class="fa fa-forward"></i>我要报名</a> ';
+                        return "<a class='btn btn-success btn-xs'" + removeFlag + "href= 'javascript:void(0)' onclick='signUpCourse(\"" + row.id + "\",\"" + row.courseName + "\")'>" + '<i class="fa fa-forward"></i>我要报名' + "</a> ";
                     }
                 }]
         };
         $.table.init(options);
     });
 
-    function signUpCourse(id) {
+    function signUpCourse(id, courseName) {
         table.set();
-        $.modal.confirm("确定要报名【" + table.options.modalName + "】课程吗？", function() {
+        $.modal.confirm("确定要报名【" + courseName + "】课程吗？", function() {
             var url = $.common.isEmpty(id) ? table.options.signUpCourseUrl : table.options.signUpCourseUrl.replace("{id}", id);
             if(table.options.type == table_type.bootstrapTreeTable) {
                 $.operate.get(url);
             } else {
-                var data = { "ids": id };
+                var data = { "id": id };
                 $.operate.submit(url, "post", "json", data);
             }
         });

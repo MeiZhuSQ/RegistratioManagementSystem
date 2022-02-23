@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.ShiroUtils;
@@ -110,13 +111,37 @@ public class RegistrationCourseServiceImpl implements IRegistrationCourseService
      * @return 结果
      */
     @Override
-    public int signUpCourse(String id) {
+    public AjaxResult signUpCourse(String id) {
         RegistrationUserCourse registrationUserCourse = new RegistrationUserCourse();
         registrationUserCourse.setCourseId(id);
         SysUser currentUser = ShiroUtils.getSysUser();
         registrationUserCourse.setUserId(String.valueOf(currentUser.getUserId()));
+        registrationUserCourse.setRegistrationStatus("1");
+        List<RegistrationUserCourse> registrationUserCourses = registrationUserCourseMapper.selectRegistrationUserCourseList(registrationUserCourse);
+        if (registrationUserCourses.size() > 0) {
+            return AjaxResult.error("您已经报名了该课程！");
+        }
         registrationUserCourse.setCreateTime(DateUtils.getNowDate());
         registrationUserCourse.setCreateBy(currentUser.getLoginName());
-        return registrationUserCourseMapper.insertRegistrationUserCourse(registrationUserCourse);
+        registrationUserCourseMapper.insertRegistrationUserCourse(registrationUserCourse);
+        return AjaxResult.success("报名成功！");
+    }
+
+    /**
+     * 退出报名
+     *
+     * @param id
+     * @return 结果
+     */
+    @Override
+    public int quitSignUpCourse(String id) {
+        RegistrationUserCourse registrationUserCourse = new RegistrationUserCourse();
+        registrationUserCourse.setCourseId(id);
+        SysUser currentUser = ShiroUtils.getSysUser();
+        registrationUserCourse.setUserId(String.valueOf(currentUser.getUserId()));
+        registrationUserCourse.setRegistrationStatus("0");
+        registrationUserCourse.setUpdateTime(DateUtils.getNowDate());
+        registrationUserCourse.setUpdateBy(currentUser.getLoginName());
+        return registrationUserCourseMapper.updateRegistrationUserCourse(registrationUserCourse);
     }
 }

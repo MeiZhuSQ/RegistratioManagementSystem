@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.RegistrationCourse;
 
 /**
@@ -65,5 +67,13 @@ public interface IRegistrationCourseService
      * @param id
      * @return 结果
      */
-    public int signUpCourse(String id);
+    public AjaxResult signUpCourse(String id);
+
+    /**
+     * 退出报名
+     *
+     * @param id
+     * @return 结果
+     */
+    public int quitSignUpCourse(String id);
 }
