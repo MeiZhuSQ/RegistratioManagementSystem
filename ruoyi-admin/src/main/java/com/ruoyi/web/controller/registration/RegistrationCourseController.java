@@ -58,7 +58,7 @@ public class RegistrationCourseController extends BaseController
     /**
      * 查询报名课程列表
      */
-    @RequiresPermissions("system:course:list")
+    @RequiresPermissions("system:course:view")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(RegistrationCourse registrationCourse)
@@ -75,7 +75,7 @@ public class RegistrationCourseController extends BaseController
     /**
      * 查询我的报名课程列表
      */
-    @RequiresPermissions("system:course:myCourselist")
+    @RequiresPermissions("system:course:view")
     @PostMapping("/myCourselist")
     @ResponseBody
     public TableDataInfo myCourselist(RegistrationCourse registrationCourse)
@@ -182,7 +182,7 @@ public class RegistrationCourseController extends BaseController
     /**
      * 我要报名
      */
-    @RequiresPermissions("system:course:signUpCourse")
+    @RequiresPermissions("system:course:view")
     @Log(title = "我要报名", businessType = BusinessType.INSERT)
     @PostMapping( "/signUpCourse")
     @ResponseBody
@@ -201,7 +201,7 @@ public class RegistrationCourseController extends BaseController
     /**
      * 退出报名
      */
-    @RequiresPermissions("system:course:quitSignUpCourse")
+    @RequiresPermissions("system:course:view")
     @Log(title = "退出报名", businessType = BusinessType.UPDATE)
     @PostMapping( "/quitSignUpCourse")
     @ResponseBody

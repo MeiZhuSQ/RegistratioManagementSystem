@@ -1,7 +1,14 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.ShiroUtils;
+import com.ruoyi.system.domain.RegistrationCourse;
+import com.ruoyi.system.mapper.RegistrationCourseMapper;
+import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.RegistrationUserCourseMapper;
@@ -20,6 +27,12 @@ public class RegistrationUserCourseServiceImpl implements IRegistrationUserCours
 {
     @Autowired
     private RegistrationUserCourseMapper registrationUserCourseMapper;
+
+    @Autowired
+    private RegistrationCourseMapper registrationCourseMapper;
+
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 查询学生报名课程
@@ -42,7 +55,28 @@ public class RegistrationUserCourseServiceImpl implements IRegistrationUserCours
     @Override
     public List<RegistrationUserCourse> selectRegistrationUserCourseList(RegistrationUserCourse registrationUserCourse)
     {
-        return registrationUserCourseMapper.selectRegistrationUserCourseList(registrationUserCourse);
+        RegistrationCourse registrationCourse = new RegistrationCourse();
+        Long userId = ShiroUtils.getUserId();
+        registrationCourse.setTeacherId(userId);
+        List<RegistrationCourse> registrationCourses = registrationCourseMapper.selectRegistrationCourseList(registrationCourse);
+        List<Long> courseIds = registrationCourses.stream().map(RegistrationCourse::getId).collect(Collectors.toList());
+        List<RegistrationUserCourse> registrationUserCourses = registrationUserCourseMapper.selectRegistrationUserCourseList(registrationUserCourse);
+        List<RegistrationUserCourse> userCourses = registrationUserCourses.stream().filter(m -> courseIds.contains(Long.valueOf(m.getCourseId()))).collect(Collectors.toList());
+        for (RegistrationUserCourse userCourse : userCourses) {
+            for (RegistrationCourse course : registrationCourses) {
+                if (userCourse.getCourseId().equals(String.valueOf(course.getId()))){
+                    userCourse.setCourseName(course.getCourseName());
+                    userCourse.setCourseScore(course.getCourseScore());
+                    userCourse.setCourseRequired(course.getCourseRequired());
+                    userCourse.setTeacherId(course.getTeacherId());
+                    SysUser sysUser = userMapper.selectUserById(course.getTeacherId());
+                    userCourse.setTeacherName(sysUser.getUserName());
+                    SysUser user = userMapper.selectUserById(Long.parseLong(userCourse.getUserId()));
+                    userCourse.setUserName(user.getUserName());
+                }
+            }
+        }
+        return userCourses;
     }
 
     /**

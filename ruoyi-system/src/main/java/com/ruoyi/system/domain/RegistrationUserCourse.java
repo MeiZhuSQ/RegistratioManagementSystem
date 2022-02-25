@@ -22,6 +22,10 @@ public class RegistrationUserCourse extends BaseEntity
     @Excel(name = "用户id")
     private String userId;
 
+    /** 学生姓名 */
+    @Excel(name = "用户id")
+    private String userName;
+
     /** 课程id */
     @Excel(name = "课程id")
     private String courseId;
@@ -29,6 +33,26 @@ public class RegistrationUserCourse extends BaseEntity
     /** 报名状态 0未报名 1已报名 */
     @Excel(name = "报名状态 0未报名 1已报名")
     private String registrationStatus;
+
+    /** 课程名称 */
+    @Excel(name = "课程名称")
+    private String courseName;
+
+    /** 课程学分 */
+    @Excel(name = "课程学分")
+    private String courseScore;
+
+    /** 是否是必修课程 0选修 1必修 */
+    @Excel(name = "是否是必修课程 0选修 1必修")
+    private String courseRequired;
+
+    /** 教师ID */
+    @Excel(name = "教师ID")
+    private Long teacherId;
+
+    /** 教师姓名 */
+    @Excel(name = "教师姓名")
+    private String teacherName;
 
     public void setId(Long id) 
     {
@@ -65,6 +89,54 @@ public class RegistrationUserCourse extends BaseEntity
     public String getRegistrationStatus() 
     {
         return registrationStatus;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getCourseScore() {
+        return courseScore;
+    }
+
+    public void setCourseScore(String courseScore) {
+        this.courseScore = courseScore;
+    }
+
+    public String getCourseRequired() {
+        return courseRequired;
+    }
+
+    public void setCourseRequired(String courseRequired) {
+        this.courseRequired = courseRequired;
+    }
+
+    public Long getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override

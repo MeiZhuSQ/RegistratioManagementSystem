@@ -38,14 +38,7 @@ public class RegistrationUserCourseController extends BaseController
     @GetMapping()
     public String userCourse()
     {
-        return prefix + "/userCourse";
-    }
-
-    @RequiresPermissions("system:signUpCourse:view")
-    @GetMapping("/signUpCourse")
-    public String toSignUp()
-    {
-        return prefix + "/signUpCourse";
+        return prefix + "/userCourseManage";
     }
 
     /**
