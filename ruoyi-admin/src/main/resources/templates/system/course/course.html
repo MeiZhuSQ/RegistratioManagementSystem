@@ -22,10 +22,6 @@
                                 </select>
                             </li>
                             <li>
-                                <label>教师ID：</label>
-                                <input type="text" name="teacherId"/>
-                            </li>
-                            <li>
                                 <label>课程状态：</label>
                                 <select name="status" th:with="type=${@dict.getType('course_status')}">
                                     <option value="">所有</option>

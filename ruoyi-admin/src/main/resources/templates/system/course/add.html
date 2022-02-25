@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">教师ID：</label>
+                <label class="col-sm-3 control-label is-required">教师姓名：</label>
                 <div class="col-sm-8">
                     <select name="teacherId" class="form-control m-b">
                         <option th:each="teacher:${teachers}" th:value="${teacher.userId}" th:text="${teacher.userName}" th:disabled="${teacher.status == '1'}"></option>
