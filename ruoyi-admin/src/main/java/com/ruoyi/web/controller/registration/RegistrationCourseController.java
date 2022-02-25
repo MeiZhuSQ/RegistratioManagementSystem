@@ -85,7 +85,7 @@ public class RegistrationCourseController extends BaseController
         registrationUserCourse.setUserId(String.valueOf(userId));
         registrationUserCourse.setRegistrationStatus("1");
         startPage();
-        List<RegistrationUserCourse> registrationUserCourses = registrationUserCourseService.selectRegistrationUserCourseList(registrationUserCourse);
+        List<RegistrationUserCourse> registrationUserCourses = registrationUserCourseService.selectMyCourseList(registrationUserCourse);
         List<RegistrationCourse> collect = registrationUserCourses.stream().map(m -> {
             RegistrationCourse rs = registrationCourseService.selectRegistrationCourseById(Long.valueOf(m.getCourseId()));
             return rs;

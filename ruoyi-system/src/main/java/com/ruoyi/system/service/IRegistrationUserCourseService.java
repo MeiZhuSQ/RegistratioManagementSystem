@@ -28,6 +28,13 @@ public interface IRegistrationUserCourseService
     public List<RegistrationUserCourse> selectRegistrationUserCourseList(RegistrationUserCourse registrationUserCourse);
 
     /**
+     * 查询我的报名课程列表
+     *
+     * @param registrationUserCourse 学生报名课程
+     * @return 学生报名课程集合
+     */
+    public List<RegistrationUserCourse> selectMyCourseList(RegistrationUserCourse registrationUserCourse);
+    /**
      * 新增学生报名课程
      * 
      * @param registrationUserCourse 学生报名课程

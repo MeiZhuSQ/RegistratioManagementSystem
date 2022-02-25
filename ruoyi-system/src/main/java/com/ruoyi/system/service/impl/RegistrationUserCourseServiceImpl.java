@@ -80,6 +80,18 @@ public class RegistrationUserCourseServiceImpl implements IRegistrationUserCours
     }
 
     /**
+     * 查询学生报名课程列表
+     *
+     * @param registrationUserCourse 学生报名课程
+     * @return 学生报名课程
+     */
+    @Override
+    public List<RegistrationUserCourse> selectMyCourseList(RegistrationUserCourse registrationUserCourse)
+    {
+        return registrationUserCourseMapper.selectRegistrationUserCourseList(registrationUserCourse);
+    }
+
+    /**
      * 新增学生报名课程
      * 
      * @param registrationUserCourse 学生报名课程
