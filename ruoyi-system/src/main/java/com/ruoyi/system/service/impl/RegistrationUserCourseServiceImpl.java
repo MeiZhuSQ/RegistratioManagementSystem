@@ -57,7 +57,9 @@ public class RegistrationUserCourseServiceImpl implements IRegistrationUserCours
     {
         RegistrationCourse registrationCourse = new RegistrationCourse();
         Long userId = ShiroUtils.getUserId();
-        registrationCourse.setTeacherId(userId);
+        if (1L != userId) {
+            registrationCourse.setTeacherId(userId);
+        }
         List<RegistrationCourse> registrationCourses = registrationCourseMapper.selectRegistrationCourseList(registrationCourse);
         List<Long> courseIds = registrationCourses.stream().map(RegistrationCourse::getId).collect(Collectors.toList());
         List<RegistrationUserCourse> registrationUserCourses = registrationUserCourseMapper.selectRegistrationUserCourseList(registrationUserCourse);
