@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.RegistrationUserCourse;
 import com.ruoyi.system.mapper.RegistrationUserCourseMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
@@ -29,14 +30,13 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 报名课程Controller
- * 
+ *
  * @author ruoyi
  * @date 2022-02-22
  */
 @Controller
 @RequestMapping("/system/course")
-public class RegistrationCourseController extends BaseController
-{
+public class RegistrationCourseController extends BaseController {
     private String prefix = "system/course";
 
     @Autowired
@@ -50,8 +50,7 @@ public class RegistrationCourseController extends BaseController
 
     @RequiresPermissions("system:course:view")
     @GetMapping()
-    public String course()
-    {
+    public String course() {
         return prefix + "/course";
     }
 
@@ -61,8 +60,7 @@ public class RegistrationCourseController extends BaseController
     @RequiresPermissions("system:course:view")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(RegistrationCourse registrationCourse)
-    {
+    public TableDataInfo list(RegistrationCourse registrationCourse) {
         startPage();
         List<RegistrationCourse> list = registrationCourseService.selectRegistrationCourseList(registrationCourse);
         list.forEach(m -> {
@@ -78,8 +76,7 @@ public class RegistrationCourseController extends BaseController
     @RequiresPermissions("system:course:view")
     @PostMapping("/myCourselist")
     @ResponseBody
-    public TableDataInfo myCourselist(RegistrationCourse registrationCourse)
-    {
+    public TableDataInfo myCourselist(RegistrationCourse registrationCourse) {
         RegistrationUserCourse registrationUserCourse = new RegistrationUserCourse();
         Long userId = getUserId();
         registrationUserCourse.setUserId(String.valueOf(userId));
@@ -89,6 +86,23 @@ public class RegistrationCourseController extends BaseController
         List<RegistrationCourse> collect = registrationUserCourses.stream().map(m -> {
             RegistrationCourse rs = registrationCourseService.selectRegistrationCourseById(Long.valueOf(m.getCourseId()));
             return rs;
+        }).filter(n -> {
+            if (StringUtils.isBlank(registrationCourse.getCourseName()) && StringUtils.isBlank(registrationCourse.getCourseRequired())) {
+                return true;
+            } else if (StringUtils.isNotBlank(registrationCourse.getCourseName()) && StringUtils.isNotBlank(registrationCourse.getCourseRequired())) {
+                if (n.getCourseName().contains(registrationCourse.getCourseName()) && n.getCourseRequired().equals(registrationCourse.getCourseRequired())) {
+                    return true;
+                }
+            } else if (StringUtils.isNotBlank(registrationCourse.getCourseName()) && StringUtils.isBlank(registrationCourse.getCourseRequired())) {
+                if (n.getCourseName().contains(registrationCourse.getCourseName())) {
+                    return true;
+                }
+            } else if (StringUtils.isBlank(registrationCourse.getCourseName()) && StringUtils.isNotBlank(registrationCourse.getCourseRequired())) {
+                if (n.getCourseRequired().equals(registrationCourse.getCourseRequired())) {
+                    return true;
+                }
+            }
+            return false;
         }).collect(Collectors.toList());
         return getDataTable(collect);
     }
@@ -100,8 +114,7 @@ public class RegistrationCourseController extends BaseController
     @Log(title = "报名课程", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(RegistrationCourse registrationCourse)
-    {
+    public AjaxResult export(RegistrationCourse registrationCourse) {
         List<RegistrationCourse> list = registrationCourseService.selectRegistrationCourseList(registrationCourse);
         ExcelUtil<RegistrationCourse> util = new ExcelUtil<RegistrationCourse>(RegistrationCourse.class);
         return util.exportExcel(list, "报名课程数据");
@@ -111,8 +124,7 @@ public class RegistrationCourseController extends BaseController
      * 新增报名课程
      */
     @GetMapping("/add")
-    public String add(ModelMap mmap)
-    {
+    public String add(ModelMap mmap) {
         SysUser user = new SysUser();
         user.setRoleId(2L);
         List<SysUser> teachers = userMapper.selectAllocatedList(user);
@@ -127,8 +139,7 @@ public class RegistrationCourseController extends BaseController
     @Log(title = "报名课程", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(RegistrationCourse registrationCourse)
-    {
+    public AjaxResult addSave(RegistrationCourse registrationCourse) {
         return toAjax(registrationCourseService.insertRegistrationCourse(registrationCourse));
     }
 
@@ -137,8 +148,7 @@ public class RegistrationCourseController extends BaseController
      */
     @RequiresPermissions("system:course:edit")
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long id, ModelMap mmap)
-    {
+    public String edit(@PathVariable("id") Long id, ModelMap mmap) {
         RegistrationCourse registrationCourse = registrationCourseService.selectRegistrationCourseById(id);
         SysUser user = new SysUser();
         user.setRoleId(2L);
@@ -155,8 +165,7 @@ public class RegistrationCourseController extends BaseController
     @Log(title = "报名课程", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(RegistrationCourse registrationCourse)
-    {
+    public AjaxResult editSave(RegistrationCourse registrationCourse) {
         return toAjax(registrationCourseService.updateRegistrationCourse(registrationCourse));
     }
 
@@ -165,17 +174,15 @@ public class RegistrationCourseController extends BaseController
      */
     @RequiresPermissions("system:course:remove")
     @Log(title = "报名课程", businessType = BusinessType.DELETE)
-    @PostMapping( "/remove")
+    @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
-    {
+    public AjaxResult remove(String ids) {
         return toAjax(registrationCourseService.deleteRegistrationCourseByIds(ids));
     }
 
     @RequiresPermissions("system:course:view")
     @GetMapping("/toSignUpCourse")
-    public String toSignUpCourse()
-    {
+    public String toSignUpCourse() {
         return prefix + "/signUpCourse";
     }
 
@@ -184,17 +191,15 @@ public class RegistrationCourseController extends BaseController
      */
     @RequiresPermissions("system:course:view")
     @Log(title = "我要报名", businessType = BusinessType.INSERT)
-    @PostMapping( "/signUpCourse")
+    @PostMapping("/signUpCourse")
     @ResponseBody
-    public AjaxResult signUpCourse(String id)
-    {
+    public AjaxResult signUpCourse(String id) {
         return registrationCourseService.signUpCourse(id);
     }
 
     @RequiresPermissions("system:course:view")
     @GetMapping("/toMySignUpCourse")
-    public String toMySignUpCourse()
-    {
+    public String toMySignUpCourse() {
         return prefix + "/mySignUpCourse";
     }
 
@@ -203,10 +208,9 @@ public class RegistrationCourseController extends BaseController
      */
     @RequiresPermissions("system:course:view")
     @Log(title = "退出报名", businessType = BusinessType.UPDATE)
-    @PostMapping( "/quitSignUpCourse")
+    @PostMapping("/quitSignUpCourse")
     @ResponseBody
-    public AjaxResult quitSignUpCourse(String id)
-    {
+    public AjaxResult quitSignUpCourse(String id) {
         registrationCourseService.quitSignUpCourse(id);
         return AjaxResult.success("退出报名成功！");
     }
